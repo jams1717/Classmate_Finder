@@ -1,0 +1,126 @@
+<head>
+    <style>
+        .block {
+          width: 100%;
+        }
+        .head_table {
+            table-layout: fixed;
+            width: 500px;
+            max-width: 90%;
+            align: middle;
+        }
+    </style>
+</head>
+<form method="POST" action="/">
+    <h1 style="text-align:center">Hello!</h1>
+    <br>
+    <br>
+    <div align="middle">
+        <table class="head_table">
+            <tbody align="middle">
+                <tr>
+                    <td colspan="50">
+                        <h3>Please enter your first name</h3>
+                        <input type="text" class="block" name="user_firstname" value="{{ user_firstname }}" />
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="50">
+                        <h3>...and your last name</h3>
+                        <input type="text" name="user_lastname" class="block" value="{{ user_lastname }}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="33">
+                        <select name="school_year" class="block">
+                            {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="33">
+                        <input type="submit" class="block" value="Get Previous Data" name="Get Previous Data" />
+                    </td>
+                    <td colspan="1"></td>
+                    <td colspan="33">
+                        <input type="submit" class="block" value="Clear Previous Data" name="Clear Previous Data" />
+                    </td>
+          </tbody>
+        </table>
+    </div>
+<br>
+<div style="width: 50%; margin: 0 auto;">
+    <h4 style="text-align:center">Please input your courses:</h4>
+    <table style="margin-left:auto; margin-right:auto;">
+        <tr>
+            <th>Period</th>
+            <th>Grade</th>
+            <th>Course Code</th>
+            <th>Room</th>
+        </tr>
+        <tr>
+            {% for per in courses %}
+            <td>{{per}}</td>
+            <td>
+                <select name="period_{{per}}_grade" onchange="this.form.submit()"> <!--method="POST" action="/"-->
+                    {% for grade in grades %}
+                    <option value="{{grade}}" {% if p_grades[per] == grade %} SELECTED {% endif %}>{{grade}}</option>"
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <select name="period_{{per}}_course">
+                    {% for course in courses[per] %}
+                    <option value="{{course}}">{{course}}</option>
+                    {% endfor %}
+                </select>
+            <td>
+                <input type="text" name="period_{{per}}_room" size="25" value="{{p_rooms[per]}}"/>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div align="middle">
+        <table class="head_table">
+            <tbody align="middle">
+                <tr>
+                    <td colspan="50">
+                        <input type="submit" align="right" value="Submit" name="Submit">
+                    </td>
+                    <td colspan="50">
+                        <input type="submit" align="right" value="Find my Classmates" name="Find my Classmates">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</form>
+<p style="color:red">{{ err_msg | safe}}</p>
+<br>
+
+{% if submit_click %}
+<p>Submitted!</p>
+{% endif %}
+
+{% if fc_click %}
+    {% if classmates != {} %}
+    <table width="750px">
+        <tr>
+            {% for per in classmates.keys() %}
+            <th><font color="#008080" size="4">{{per}}</font></th>
+            {% endfor %}
+        </tr>
+        <tr valign= "top">
+            {% for people in classmates.values() %}
+                <th>
+                    {% for person in people %}
+                    <p><font face="Verdana" size="2">{{person}}</font></p>
+                    {% endfor %}
+                </th>
+            {% endfor %}
+        </tr>
+    </table>
+    {% else %}
+    <p style="text-align:center"><font face="Verdana" size="4">Nobody in your classes has used this site yet.</font></p>
+    {% endif %}
+{% endif %}
